@@ -26,7 +26,17 @@ pnpm build
 
 This will generate the compiled code in the `dist/` directory.
 
-### 3. Configure Claude Desktop
+### 3. Start the server
+
+Compile TypeScript to JavaScript:
+
+```bash
+pnpm start
+```
+
+This will generate the compiled code in the `dist/` directory.
+
+### 4. Configure Claude Desktop
 
 #### Step 1: Open/Create Claude Desktop Config
 
@@ -86,14 +96,14 @@ Add the following configuration to the `mcpServers` object:
 }
 ```
 
-### 4. Restart Claude Desktop
+### 5. Restart Claude Desktop
 
 After updating the configuration:
 
 1. Completely quit Claude Desktop (Cmd+Q on macOS)
 2. Reopen Claude Desktop
 
-### 5. Verify Installation
+### 6. Verify Installation
 
 1. Open Claude Desktop
 2. Look for the **filters button** (funnel icon) next to the plus button in the Claude Desktop interface
