@@ -1,0 +1,34 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# build artifacts
+dist/
+build/
+coverage/
+
+# environment variables
+.env
+.env.*
+!.env.example # Keep example for reference
+
+# logs
+logs/
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# npm package manager files
+package-lock.json # Uncomment if you prefer to ignore this, though it's generally recommended to track it
