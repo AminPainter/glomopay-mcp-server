@@ -26,15 +26,11 @@ pnpm build
 
 This will generate the compiled code in the `dist/` directory.
 
-### 3. Start the server
-
-Compile TypeScript to JavaScript:
+### 3. Start Server
 
 ```bash
 pnpm start
 ```
-
-This will generate the compiled code in the `dist/` directory.
 
 ### 4. Configure Claude Desktop
 
