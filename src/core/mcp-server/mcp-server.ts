@@ -1,11 +1,11 @@
-import { McpServer as McpServerInternal } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { McpServer as McpServerInternal } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
-import { BaseTool } from "@/shared/tool/base-tool";
+import { BaseTool } from '@/shared/tool/base-tool';
 
 export class MCPServer {
-  private static SERVER_NAME = "glomopay";
-  private static SERVER_VERSION = "1.0.0";
+  private static SERVER_NAME = 'glomopay';
+  private static SERVER_VERSION = '1.0.0';
   private static instance: MCPServer;
 
   private server: McpServerInternal;
@@ -33,7 +33,7 @@ export class MCPServer {
         description: config.description,
         inputSchema: config.inputSchema,
       },
-      tool.handler
+      tool.handler,
     );
 
     return this;
@@ -42,6 +42,6 @@ export class MCPServer {
   async start() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error("Glomopay MCP Server running on STDIO");
+    console.error('Glomopay MCP Server running on STDIO');
   }
 }

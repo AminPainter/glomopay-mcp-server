@@ -1,5 +1,5 @@
-import { CallToolResult, Tool } from "@modelcontextprotocol/sdk/types";
-import { ZodRawShape } from "zod";
+import { CallToolResult } from '@modelcontextprotocol/sdk/types';
+import { ZodRawShape } from 'zod';
 
 interface IToolConfig {
   name: string;
@@ -8,9 +8,7 @@ interface IToolConfig {
   inputSchema: ZodRawShape;
 }
 
-type TToolExecutor = (
-  args: ZodRawShape
-) => Promise<CallToolResult> | CallToolResult;
+type TToolExecutor = (args: ZodRawShape) => Promise<CallToolResult> | CallToolResult;
 
 export abstract class BaseTool {
   public handler: TToolExecutor;

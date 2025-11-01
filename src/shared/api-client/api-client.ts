@@ -3,17 +3,10 @@
 // TODO: Have own config, do not extend axios
 // TODO: Constructor should take anything that extends our own config
 
-import axios, {
-  type AxiosInstance,
-  type AxiosRequestConfig,
-  AxiosError,
-} from "axios";
-import { ZodSchema } from "zod";
+import axios, { type AxiosInstance, type AxiosRequestConfig, AxiosError } from 'axios';
+import { ZodSchema } from 'zod';
 
-import {
-  convertToCamelCase,
-  convertToSnakeCase,
-} from "../case-converter/case-converter.module";
+import { convertToCamelCase, convertToSnakeCase } from '../case-converter/case-converter.module';
 
 /**
  * Custom error class for API errors.
@@ -25,13 +18,13 @@ export class ApiError extends Error {
 
   constructor(message: string, statusCode?: number, data?: unknown) {
     super(message);
-    this.name = "ApiError";
+    this.name = 'ApiError';
     this.statusCode = statusCode;
     this.data = data;
   }
 }
 
-export type THttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+export type THttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 /**
  * A type alias for a custom error handler function.
@@ -59,10 +52,7 @@ export class ApiClient {
   private customErrorHandlers: { [status: number]: TErrorHandler };
   private enableCaseConversion: boolean;
 
-  constructor(
-    config: IApiClientConfig = {},
-    customErrorHandlers: { [statusCode: number]: TErrorHandler } = {}
-  ) {
+  constructor(config: IApiClientConfig = {}, customErrorHandlers: { [statusCode: number]: TErrorHandler } = {}) {
     this.axiosInstance = axios.create(config);
     this.customErrorHandlers = customErrorHandlers;
     this.enableCaseConversion = config.enableCaseConversion || false;
@@ -73,7 +63,7 @@ export class ApiClient {
         //   if (import.meta.env.DEV) console.debug(`[ApiClient] Request: ${request.method?.toUpperCase()} ${request.url}`);
         return request;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     // Response interceptor for centralized error handling and logging in development
@@ -87,24 +77,19 @@ export class ApiClient {
           const statusCode = error.response.status;
           const errorData = error.response.data;
           const message =
-            (errorData as { message?: string; error?: string } | undefined)
-              ?.message ||
-            (errorData as { message?: string; error?: string } | undefined)
-              ?.error ||
+            (errorData as { message?: string; error?: string } | undefined)?.message ||
+            (errorData as { message?: string; error?: string } | undefined)?.error ||
             `Request failed with status ${statusCode}`;
 
           // Invoke custom error handler for the status code, if available.
-          if (this.customErrorHandlers[statusCode])
-            this.customErrorHandlers[statusCode](error);
+          if (this.customErrorHandlers[statusCode]) this.customErrorHandlers[statusCode](error);
 
           return Promise.reject(new ApiError(message, statusCode, errorData));
         } else {
           console.error(`[ApiClient] Network/Unknown Error: ${error.message}`);
-          return Promise.reject(
-            new ApiError(error.message, undefined, undefined)
-          );
+          return Promise.reject(new ApiError(error.message, undefined, undefined));
         }
-      }
+      },
     );
   }
 
@@ -118,12 +103,7 @@ export class ApiClient {
    */
   private validateResponse(data: unknown, schema: ZodSchema) {
     const result = schema.safeParse(data);
-    if (!result.success)
-      throw new ApiError(
-        `Response validation error: ${JSON.stringify(result.error.errors)}`,
-        500,
-        data
-      );
+    if (!result.success) throw new ApiError(`Response validation error: ${JSON.stringify(result.error.errors)}`, 500, data);
     return result.data;
   }
 
@@ -136,17 +116,10 @@ export class ApiClient {
    * @param schema - Optional Zod schema for response validation.
    * @returns The validated response data.
    */
-  private async request(
-    method: THttpMethod,
-    url: string,
-    body?: unknown,
-    schema?: TZodSchemaParam,
-    config: AxiosRequestConfig = {}
-  ) {
+  private async request(method: THttpMethod, url: string, body?: unknown, schema?: TZodSchemaParam, config: AxiosRequestConfig = {}) {
     if (this.enableCaseConversion) {
-      if (body && typeof body === "object") body = convertToSnakeCase(body);
-      if (config.params && typeof config.params === "object")
-        config.params = convertToSnakeCase(config.params);
+      if (body && typeof body === 'object') body = convertToSnakeCase(body);
+      if (config.params && typeof config.params === 'object') config.params = convertToSnakeCase(config.params);
     }
     let { data } = await this.axiosInstance.request({
       method,
@@ -154,54 +127,27 @@ export class ApiClient {
       data: body,
       ...config,
     });
-    data =
-      this.enableCaseConversion && typeof data === "object"
-        ? convertToCamelCase(data)
-        : data;
+    data = this.enableCaseConversion && typeof data === 'object' ? convertToCamelCase(data) : data;
     return schema ? this.validateResponse(data, schema) : data;
   }
 
-  async get(
-    url: string,
-    params?: Record<string, unknown>,
-    schema?: TZodSchemaParam,
-    config: AxiosRequestConfig = {}
-  ) {
-    return this.request("GET", url, undefined, schema, { ...config, params });
+  async get(url: string, params?: Record<string, unknown>, schema?: TZodSchemaParam, config: AxiosRequestConfig = {}) {
+    return this.request('GET', url, undefined, schema, { ...config, params });
   }
 
-  async post(
-    url: string,
-    body: unknown = {},
-    schema?: TZodSchemaParam,
-    config: AxiosRequestConfig = {}
-  ) {
-    return this.request("POST", url, body, schema, config);
+  async post(url: string, body: unknown = {}, schema?: TZodSchemaParam, config: AxiosRequestConfig = {}) {
+    return this.request('POST', url, body, schema, config);
   }
 
-  async put(
-    url: string,
-    body: unknown = {},
-    schema?: TZodSchemaParam,
-    config: AxiosRequestConfig = {}
-  ) {
-    return this.request("PUT", url, body, schema, config);
+  async put(url: string, body: unknown = {}, schema?: TZodSchemaParam, config: AxiosRequestConfig = {}) {
+    return this.request('PUT', url, body, schema, config);
   }
 
-  async patch(
-    url: string,
-    body: unknown = {},
-    schema?: TZodSchemaParam,
-    config: AxiosRequestConfig = {}
-  ) {
-    return this.request("PATCH", url, body, schema, config);
+  async patch(url: string, body: unknown = {}, schema?: TZodSchemaParam, config: AxiosRequestConfig = {}) {
+    return this.request('PATCH', url, body, schema, config);
   }
 
-  async delete(
-    url: string,
-    schema?: TZodSchemaParam,
-    config: AxiosRequestConfig = {}
-  ) {
-    return this.request("DELETE", url, undefined, schema, config);
+  async delete(url: string, schema?: TZodSchemaParam, config: AxiosRequestConfig = {}) {
+    return this.request('DELETE', url, undefined, schema, config);
   }
 }

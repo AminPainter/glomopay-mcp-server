@@ -1,5 +1,5 @@
-import { MCPServer } from "./core/mcp-server/mcp-server";
-import { ListCustomersTool } from "./features/customer/customer.module";
+import { MCPServer } from './core/mcp-server/mcp-server';
+import { ListCustomersTool } from './features/customer/customer.module';
 
 const mcpServer = MCPServer.getInstance();
 

@@ -76,9 +76,7 @@ Add the following configuration to the `mcpServers` object:
   "mcpServers": {
     "glomopay": {
       "command": "node",
-      "args": [
-        "/Users/aminpainter/Desktop/Glomopay Projects/glomopay-mcp/dist/index.js"
-      ],
+      "args": ["/Users/aminpainter/Desktop/Glomopay Projects/glomopay-mcp/dist/index.js"],
       "env": {
         "API_SECRET_KEY": "eyJhbGciOiJSUzI1NiJ9.eyJlbnYiOiJwcm9kdWN0aW9uIiwiZXhwIjo0OTEzNzE1OTg1LCJpYXQiOjE3NTgwNDIzODUsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAiLCJzdWIiOiJtZXJjaF82ODViYjk5ZUZoUEdBIiwianRpIjoiMjYyZmVjYTItNmYxMC00Njg4LTllMzktM2MzNDRmMTNiNjQ0In0.YmJyLpRNhvJXO8QHFNDKZ0O1LMvGrRgMw7hk4V4ByIA9uEI04IQPlqULacdbmuxaDUboasbMizKSrwvOLqtWSxspojwcwiOk6GV9nCIuAdr-xpL_SCflzHl07EdRXYcM6WPDQqGkZmRK-ZJvnaWxlkv6e4PoIPIhlqEM2DVU8LMe0YdryhBQhtMxc2rwuaGkNEO2_N7hrIOHu0aqPEojYsONJ-kqcBz7i-OneeChdRth0DLz3M0-pRhp-sNxJ-G0DoL9eaQoM0kekh3HtQCZuIn8-ZV_O5XiueEjbPoFnQTp-T0s-MfB0_iXnQxvBj79dUNsL9Mi-d3y3zsKaFpkow",
         "API_HOST": "http://localhost:3000"

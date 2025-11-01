@@ -1,1 +1,1 @@
-export { apiClient } from "./api-client.singleton";
+export { apiClient } from './api-client.singleton';

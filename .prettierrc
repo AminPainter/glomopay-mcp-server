@@ -1,0 +1,11 @@
+{
+  "semi": true,
+  "tabWidth": 2,
+  "printWidth": 150,
+  "singleQuote": true,
+  "bracketSameLine": true,
+  "max-lines": ["warn", { "max": 300, "skipBlankLines": true, "skipComments": true }],
+  "max-lines-per-function": ["warn", { "max": 75, "skipBlankLines": true, "skipComments": true }],
+  "max-statements": ["warn", { "max": 15 }],
+  "complexity": ["warn", { "max": 10 }]
+}

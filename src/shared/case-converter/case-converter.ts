@@ -4,24 +4,22 @@ type CamelToSnakeCase<S extends string> = S extends `${infer T}${infer U}`
   ? `${T extends Lowercase<T> ? T : `_${Lowercase<T>}`}${CamelToSnakeCase<U>}`
   : S;
 
-type SnakeToCamelCase<S extends string> = S extends `${infer T}_${infer U}`
-  ? `${T}${Capitalize<SnakeToCamelCase<U>>}`
-  : S;
+type SnakeToCamelCase<S extends string> = S extends `${infer T}_${infer U}` ? `${T}${Capitalize<SnakeToCamelCase<U>>}` : S;
 
 export type ConvertKeysToSnakeCase<T> = {
   [K in keyof T as CamelToSnakeCase<string & K>]: T[K] extends Array<infer U>
     ? Array<ConvertKeysToSnakeCase<U>>
     : T[K] extends Record<string, any>
-    ? ConvertKeysToSnakeCase<T[K]>
-    : T[K];
+      ? ConvertKeysToSnakeCase<T[K]>
+      : T[K];
 };
 
 export type ConvertKeysToCamelCase<T> = {
   [K in keyof T as SnakeToCamelCase<string & K>]: T[K] extends Array<infer U>
     ? Array<ConvertKeysToCamelCase<U>>
     : T[K] extends Record<string, any>
-    ? ConvertKeysToCamelCase<T[K]>
-    : T[K];
+      ? ConvertKeysToCamelCase<T[K]>
+      : T[K];
 };
 
 /**
@@ -29,13 +27,12 @@ export type ConvertKeysToCamelCase<T> = {
  * Supports nested objects and arrays of objects.
  */
 export function convertToSnakeCase<T>(input: T): any {
-  const toSnakeCase = (key: string): string =>
-    key.replace(/([A-Z])/g, "_$1").toLowerCase();
+  const toSnakeCase = (key: string): string => key.replace(/([A-Z])/g, '_$1').toLowerCase();
 
   const transform = (value: any): any => {
     if (Array.isArray(value)) {
       return value.map(transform);
-    } else if (value && typeof value === "object") {
+    } else if (value && typeof value === 'object') {
       return convertToSnakeCase(value);
     }
     return value;
@@ -47,7 +44,7 @@ export function convertToSnakeCase<T>(input: T): any {
   }
 
   // Handle top-level objects
-  if (input && typeof input === "object") {
+  if (input && typeof input === 'object') {
     const result: Record<string, any> = {};
     for (const key in input as any) {
       if (Object.prototype.hasOwnProperty.call(input, key)) {
@@ -67,13 +64,12 @@ export function convertToSnakeCase<T>(input: T): any {
  * Supports nested objects and arrays of objects.
  */
 export function convertToCamelCase<T>(input: T): any {
-  const toCamelCase = (key: string): string =>
-    key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+  const toCamelCase = (key: string): string => key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
 
   const transform = (value: any): any => {
     if (Array.isArray(value)) {
       return value.map(transform);
-    } else if (value && typeof value === "object") {
+    } else if (value && typeof value === 'object') {
       return convertToCamelCase(value);
     }
     return value;
@@ -85,7 +81,7 @@ export function convertToCamelCase<T>(input: T): any {
   }
 
   // Handle top-level objects
-  if (input && typeof input === "object") {
+  if (input && typeof input === 'object') {
     const result: Record<string, any> = {};
     for (const key in input as any) {
       if (Object.prototype.hasOwnProperty.call(input, key)) {
