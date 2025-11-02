@@ -116,7 +116,7 @@ export class ApiClient {
    * @param schema - Optional Zod schema for response validation.
    * @returns The validated response data.
    */
-  private async request(method: THttpMethod, url: string, body?: unknown, schema?: TZodSchemaParam, config: AxiosRequestConfig = {}) {
+  async request(method: THttpMethod, url: string, body?: unknown, schema?: TZodSchemaParam, config: AxiosRequestConfig = {}) {
     if (this.enableCaseConversion) {
       if (body && typeof body === 'object') body = convertToSnakeCase(body);
       if (config.params && typeof config.params === 'object') config.params = convertToSnakeCase(config.params);

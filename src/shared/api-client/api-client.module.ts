@@ -1,1 +1,1 @@
-export { apiClient } from './api-client.singleton';
+export { ApiClient, type THttpMethod, ApiError } from './api-client';

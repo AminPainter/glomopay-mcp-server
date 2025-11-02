@@ -1,7 +1,18 @@
-import { MCPServer } from './core/mcp-server/mcp-server';
-import { ListCustomersTool } from './features/customer/customer.module';
-import { CreatePaymentLinkTool } from './features/payment-link/create-payment-link.tool';
+import path from 'path';
 
-const mcpServer = MCPServer.getInstance();
+import { MCPServer } from '@/core/mcp-server/mcp-server.module';
+import { OpenApiToolGenerator } from '@/features/openapi-tool-generator/openapi-tool-generator.module';
 
-mcpServer.registerTool(new ListCustomersTool()).registerTool(new CreatePaymentLinkTool()).start();
+(async () => {
+  const mcpServer = MCPServer.getInstance();
+
+  const openApiSpecFilePath = path.resolve(__dirname, 'openapi.json');
+  const openApiToolsGenerator = new OpenApiToolGenerator();
+  await openApiToolsGenerator.loadOpenApiSpecFile(openApiSpecFilePath);
+
+  const tools = await openApiToolsGenerator.generateTools();
+
+  tools.forEach((t) => mcpServer.registerTool(t));
+
+  mcpServer.start();
+})();
