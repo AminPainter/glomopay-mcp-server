@@ -1,22 +1,22 @@
 import { CallToolResult } from '@modelcontextprotocol/sdk/types';
+import { ZodRawShape } from 'zod';
 
 import { BaseTool } from './base-tool';
-import { IToolConfig } from './tool.types';
+import { IApiConfig, IToolConfig } from './tool.types';
 
-import { ApiClient, THttpMethod } from '@/shared/api-client/api-client.module';
-import { ZodRawShape } from 'zod';
+import { ApiClient } from '@/shared/api-client/api-client.module';
 
 export class DynamicApiTool extends BaseTool {
   constructor(
     protected config: IToolConfig,
-    protected apiConfig: { method: THttpMethod; url: string },
+    protected apiConfig: IApiConfig,
     protected apiClient: ApiClient,
   ) {
     super();
   }
 
   async execute(args: ZodRawShape): Promise<CallToolResult> {
-    const response = await this.apiClient.request(this.apiConfig.method, this.apiConfig.url, args, undefined);
+    const response = await this.apiClient.request(this.apiConfig.method, this.apiConfig.path, args, undefined);
 
     return {
       content: [

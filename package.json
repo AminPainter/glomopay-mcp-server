@@ -24,6 +24,7 @@
     "@apidevtools/swagger-parser": "^12.1.0",
     "@modelcontextprotocol/sdk": "^1.20.2",
     "axios": "^1.13.1",
+    "openapi2zod": "^0.2.3",
     "zod": "^3.25.76"
   },
   "devDependencies": {
