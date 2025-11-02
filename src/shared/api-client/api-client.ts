@@ -6,7 +6,7 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig, AxiosError } from 'axios';
 import { ZodSchema } from 'zod';
 
-import { convertToCamelCase, convertToSnakeCase } from '../case-converter/case-converter.module';
+import { convertToCamelCase, convertToSnakeCase } from '@/shared/case-converter/case-converter.module';
 
 /**
  * Custom error class for API errors.
