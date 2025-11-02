@@ -1,6 +1,7 @@
 import { CallToolResult } from '@modelcontextprotocol/sdk/types';
 import { ZodRawShape } from 'zod';
-import { THttpMethod } from '@/shared/api-client/api-client';
+
+import { THttpMethod } from '@/shared/api-client/api-client.module';
 
 export interface IToolConfig {
   name: string;

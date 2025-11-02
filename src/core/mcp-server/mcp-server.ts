@@ -1,7 +1,7 @@
 import { McpServer as McpServerInternal } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
-import { BaseTool } from '@/shared/tool/base-tool';
+import { BaseTool } from '@/shared/tool/tool.module';
 
 export class MCPServer {
   private static SERVER_NAME = 'glomopay';
