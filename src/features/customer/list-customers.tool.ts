@@ -13,14 +13,13 @@ export class ListCustomersTool extends BaseTool {
   };
 
   async execute(): Promise<CallToolResult> {
-    const customers = await fetchCustomersList();
-    const formattedText = customers.data.map((cust) => cust.name).join('\n');
+    const response = await fetchCustomersList();
 
     return {
       content: [
         {
           type: 'text',
-          text: formattedText,
+          text: JSON.stringify(response),
         },
       ],
     };
