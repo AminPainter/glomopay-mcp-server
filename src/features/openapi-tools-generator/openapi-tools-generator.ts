@@ -1,7 +1,7 @@
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { OpenAPIV3 } from 'openapi-types';
 import { parseOpenApiToZod } from 'openapi2zod';
-import { ZodObject, ZodRawShape, ZodSchema } from 'zod';
+import { ZodSchema } from 'zod';
 
 import { DynamicApiTool, IToolConfig, IApiConfig } from '@/shared/tool/tool.module';
 import { ApiClient, THttpMethod } from '@/shared/api-client/api-client.module';
@@ -20,10 +20,18 @@ export class OpenApiToolGenerator {
   generateTools() {
     if (!this.apiSchemas) throw new Error('Api schemas have not been loaded before generating tools');
 
-    return this.apiSchemas.map(([endpointName, schema]) => {
-      const tool = this.buildDynamicApiTool(endpointName, schema);
-      return tool;
-    });
+    const tools = [];
+    for (const [endpointName, schema] of this.apiSchemas) {
+      try {
+        const tool = this.buildDynamicApiTool(endpointName, schema);
+        tools.push(tool);
+      } catch (error) {
+        console.error(`Building tool failed ${endpointName}`);
+        console.error(error);
+      }
+    }
+
+    return tools;
   }
 
   private buildDynamicApiTool(endpointName: string, schema: ZodSchema) {
@@ -33,7 +41,7 @@ export class OpenApiToolGenerator {
     const toolConfig: IToolConfig = {
       name: endpointName,
       description,
-      inputSchema: (schema as ZodObject<ZodRawShape>).shape,
+      inputSchema: { inputs: schema },
     };
 
     const apiConfig: IApiConfig = {

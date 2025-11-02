@@ -16,7 +16,9 @@ export class DynamicApiTool extends BaseTool {
   }
 
   async execute(args: ZodRawShape): Promise<CallToolResult> {
-    const response = await this.apiClient.request(this.apiConfig.method, this.apiConfig.path, args, undefined);
+    const { inputs } = args;
+
+    const response = await this.apiClient.request(this.apiConfig.method, this.apiConfig.path, inputs, undefined);
 
     return {
       content: [

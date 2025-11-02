@@ -42,6 +42,5 @@ export class MCPServer {
   async start() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error('Glomopay MCP Server running on STDIO');
   }
 }

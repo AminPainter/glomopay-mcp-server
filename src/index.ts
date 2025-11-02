@@ -2,8 +2,9 @@ import path from 'path';
 
 import { MCPServer } from '@/core/mcp-server/mcp-server.module';
 import { OpenApiToolGenerator } from '@/features/openapi-tools-generator/openapi-tools-generator.module';
-import { ApiClient } from './shared/api-client/api-client';
-import { config } from './features/app-config/app.config';
+import { ApiClient } from '@/shared/api-client/api-client.module';
+import { config } from '@/features/app-config/app-config.module';
+import { HealthCheckTool } from './features/health-check/health-check.module';
 
 (async () => {
   const mcpServer = MCPServer.getInstance();
@@ -22,5 +23,8 @@ import { config } from './features/app-config/app.config';
   const tools = openApiToolsGenerator.generateTools();
   tools.forEach((t) => mcpServer.registerTool(t));
 
+  mcpServer.registerTool(new HealthCheckTool());
+
   mcpServer.start();
+  console.error('Glomopay MCP Server running on STDIO');
 })();
