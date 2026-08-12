@@ -82,6 +82,16 @@ export class ApiClient {
   }
 
   /**
+   * Resolves a relative endpoint against the configured baseURL using
+   * axios' own join logic, so logs reflect the exact host axios will call.
+   * @param url - Relative endpoint path.
+   * @returns The fully resolved request URL.
+   */
+  resolveUrl(url: string): string {
+    return this.axiosInstance.getUri({ url });
+  }
+
+  /**
    * Validates the response data against an optional Zod schema.
    * @param data - The response data.
    * @param schema - Optional Zod schema for validation.
