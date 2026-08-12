@@ -67,21 +67,9 @@ export class ApiClient {
     this.customErrorHandlers = customErrorHandlers;
     this.enableCaseConversion = config.enableCaseConversion || false;
 
-    // Request interceptor for logging in development
-    this.axiosInstance.interceptors.request.use(
-      (request) => {
-        //   if (import.meta.env.DEV) console.debug(`[ApiClient] Request: ${request.method?.toUpperCase()} ${request.url}`);
-        return request;
-      },
-      (error) => Promise.reject(scrubAuthorization(error)),
-    );
-
-    // Response interceptor for centralized error handling and logging in development
+    // Response interceptor for centralized error handling.
     this.axiosInstance.interceptors.response.use(
-      (response) => {
-        // if (import.meta.env.DEV) console.debug(`[ApiClient] Response: ${response.status} ${response.config.url}`);
-        return response;
-      },
+      (response) => response,
       (error) => {
         scrubAuthorization(error);
 
