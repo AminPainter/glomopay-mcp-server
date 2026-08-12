@@ -5,11 +5,15 @@ import { ZodSchema } from 'zod';
 
 import { DynamicApiTool, IToolConfig, IApiConfig } from '@/shared/tool/tool.module';
 import { ApiClient, THttpMethod } from '@/shared/api-client/api-client.module';
+import { DownstreamSecretResolver } from '@/features/auth/auth.module';
 
 export class OpenApiToolGenerator {
   private apiSchemas: Array<[string, ZodSchema]> | null = null;
 
-  constructor(private apiClient: ApiClient) {}
+  constructor(
+    private apiClient: ApiClient,
+    private secretResolver: DownstreamSecretResolver,
+  ) {}
 
   async loadApiSchemas(openApiSpecfilePath: string) {
     const openApiDocument = await SwaggerParser.validate(openApiSpecfilePath);
@@ -49,6 +53,6 @@ export class OpenApiToolGenerator {
       path,
     };
 
-    return new DynamicApiTool(toolConfig, apiConfig, this.apiClient);
+    return new DynamicApiTool(toolConfig, apiConfig, this.apiClient, this.secretResolver);
   }
 }
