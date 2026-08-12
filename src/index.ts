@@ -25,13 +25,8 @@ import { HealthCheckTool } from './features/health-check/health-check.module';
 
   mcpServer.registerTool(new HealthCheckTool());
 
-  if (config.transport === 'stdio') {
-    await mcpServer.startStdio();
-    console.error('Glomopay MCP Server running on STDIO');
-  } else {
-    const app = createHttpServer(mcpServer, config.authMode);
-    app.listen(config.http.port, config.http.host, () => {
-      console.error(`Glomopay MCP Server running on HTTP ${config.http.host}:${config.http.port}/mcp`);
-    });
-  }
+  const app = createHttpServer(mcpServer, config.authMode);
+  app.listen(config.http.port, config.http.host, () => {
+    console.error(`Glomopay MCP Server running on HTTP ${config.http.host}:${config.http.port}/mcp`);
+  });
 })();

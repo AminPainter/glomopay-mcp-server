@@ -1,1 +1,1 @@
-export { config, type TTransport, type TAuthMode } from './app.config';
+export { config, type TAuthMode } from './app.config';
