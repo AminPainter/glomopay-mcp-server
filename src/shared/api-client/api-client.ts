@@ -27,16 +27,6 @@ export class ApiError extends Error {
 export type THttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 /**
- * The downstream Glomopay secret travels as a per-call Authorization header (never
- * stored on the axios instance). Strip it from the axios error's request config so it
- * can never end up in a log line or an error object serialized further up the stack.
- */
-function scrubAuthorization(error: AxiosError): AxiosError {
-  if (error.config?.headers) delete error.config.headers.Authorization;
-  return error;
-}
-
-/**
  * A type alias for a custom error handler function.
  */
 type TErrorHandler = (error: AxiosError) => void;
@@ -71,8 +61,6 @@ export class ApiClient {
     this.axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
-        scrubAuthorization(error);
-
         if (error.response) {
           const statusCode = error.response.status;
           const errorData = error.response.data;
