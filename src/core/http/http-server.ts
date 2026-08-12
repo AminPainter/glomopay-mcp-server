@@ -3,21 +3,18 @@ import express, { Express } from 'express';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 
 import { MCPServer } from '@/core/mcp-server/mcp-server.module';
-import { TAuthMode } from '@/features/app-config/app-config.module';
-import { createAuthMiddleware } from '@/features/auth/auth.module';
+import { apiKeyAuthMiddleware } from '@/features/auth/auth.module';
 
 const METHOD_NOT_ALLOWED_STATELESS = {
   error: 'Method not allowed: this server runs stateless Streamable HTTP and only supports POST /mcp.',
 };
 
-export function createHttpServer(mcpServer: MCPServer, authMode: TAuthMode): Express {
+export function createHttpServer(mcpServer: MCPServer): Express {
   const app = express();
   app.set('trust proxy', true);
   app.use(express.json());
 
-  const authenticate = createAuthMiddleware(authMode);
-
-  app.post('/mcp', authenticate, async (req, res) => {
+  app.post('/mcp', apiKeyAuthMiddleware, async (req, res) => {
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
     res.on('close', () => transport.close());
 

@@ -5,7 +5,6 @@ import { createHttpServer } from '@/core/http/http-server.module';
 import { OpenApiToolGenerator } from '@/features/openapi-tools-generator/openapi-tools-generator.module';
 import { ApiClient } from '@/shared/api-client/api-client.module';
 import { config } from '@/features/app-config/app-config.module';
-import { createDownstreamSecretResolver } from '@/features/auth/auth.module';
 import { HealthCheckTool } from './features/health-check/health-check.module';
 
 (async () => {
@@ -14,8 +13,7 @@ import { HealthCheckTool } from './features/health-check/health-check.module';
   const apiClient = new ApiClient({
     baseURL: `${config.glomopay.apiHost}/api/v1`,
   });
-  const secretResolver = createDownstreamSecretResolver(config.authMode);
-  const openApiToolsGenerator = new OpenApiToolGenerator(apiClient, secretResolver);
+  const openApiToolsGenerator = new OpenApiToolGenerator(apiClient);
 
   const openApiSpecFilePath = path.resolve(__dirname, 'openapi.json');
   await openApiToolsGenerator.loadApiSchemas(openApiSpecFilePath);
@@ -25,7 +23,7 @@ import { HealthCheckTool } from './features/health-check/health-check.module';
 
   mcpServer.registerTool(new HealthCheckTool());
 
-  const app = createHttpServer(mcpServer, config.authMode);
+  const app = createHttpServer(mcpServer);
   app.listen(config.http.port, config.http.host, () => {
     console.error(`Glomopay MCP Server running on HTTP ${config.http.host}:${config.http.port}/mcp`);
   });

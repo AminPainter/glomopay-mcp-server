@@ -5,20 +5,19 @@ import { BaseTool } from './base-tool';
 import { IApiConfig, IToolConfig, TToolExtra } from './tool.types';
 
 import { ApiClient } from '@/shared/api-client/api-client.module';
-import { DownstreamSecretResolver } from '@/features/auth/auth.module';
 
 export class DynamicApiTool extends BaseTool {
   constructor(
     protected config: IToolConfig,
     protected apiConfig: IApiConfig,
     protected apiClient: ApiClient,
-    protected secretResolver: DownstreamSecretResolver,
   ) {
     super();
   }
 
   async execute(args: ZodRawShape, extra: TToolExtra): Promise<CallToolResult> {
-    const secret = this.secretResolver.resolve(extra);
+    // The per-request bearer token IS the downstream Glomopay secret (API-key pass-through).
+    const secret = extra.authInfo?.token;
     if (!secret) {
       return {
         content: [{ type: 'text', text: 'Unauthorized: no Glomopay API secret supplied for this request.' }],

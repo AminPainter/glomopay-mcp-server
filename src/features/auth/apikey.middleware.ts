@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { RequestHandler } from 'express';
 
 import { AuthInfo } from '@modelcontextprotocol/sdk/server/auth/types.js';
 
@@ -10,17 +10,20 @@ declare module 'express-serve-static-core' {
 
 const BEARER_PREFIX = 'Bearer ';
 
-export function apiKeyAuthMiddleware(): RequestHandler {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const header = req.headers.authorization;
-    const token = header?.startsWith(BEARER_PREFIX) ? header.slice(BEARER_PREFIX.length).trim() : undefined;
+/**
+ * Requires `Authorization: Bearer <glomopay-secret>` on every request and exposes it to
+ * tools as `extra.authInfo.token`. The bearer IS the downstream Glomopay secret (API-key
+ * pass-through) — the server proxies calls under the caller's own key.
+ */
+export const apiKeyAuthMiddleware: RequestHandler = (req, res, next) => {
+  const header = req.headers.authorization;
+  const token = header?.startsWith(BEARER_PREFIX) ? header.slice(BEARER_PREFIX.length).trim() : undefined;
 
-    if (!token) {
-      res.status(401).json({ error: 'Missing or malformed Authorization: Bearer <glomopay-secret> header.' });
-      return;
-    }
+  if (!token) {
+    res.status(401).json({ error: 'Missing or malformed Authorization: Bearer <glomopay-secret> header.' });
+    return;
+  }
 
-    req.auth = { token, clientId: 'apikey-passthrough', scopes: [] };
-    next();
-  };
-}
+  req.auth = { token, clientId: 'apikey-passthrough', scopes: [] };
+  next();
+};
