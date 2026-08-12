@@ -28,17 +28,54 @@ export class DynamicApiTool extends BaseTool {
 
     const { inputs } = args;
 
+    // `inputs` is a flat object mixing path, query and body params (openapi2zod
+    // collapses them into one schema). Split it back apart, using the parameter
+    // locations the generator recovered from the OpenAPI spec, before dispatching.
+    const { method } = this.apiConfig;
+    const remaining: Record<string, unknown> = { ...((inputs as unknown as Record<string, unknown>) ?? {}) };
+
+    // 1. Interpolate {placeholder} path segments and consume those keys.
+    const path = this.apiConfig.path.replace(/\{([^}]+)\}/g, (match, key) => {
+      if (key in remaining) {
+        const value = String(remaining[key]);
+        delete remaining[key];
+        return encodeURIComponent(value);
+      }
+      return match;
+    });
+
+    // 2. Split the remainder into query string vs request body.
+    const params: Record<string, unknown> = {};
+    for (const name of this.apiConfig.queryParams ?? []) {
+      if (name in remaining) {
+        params[name] = remaining[name];
+        delete remaining[name];
+      }
+    }
+
+    // Fallback for operations with no spec-declared query params: GET/DELETE have
+    // no body, so anything left over must belong in the query string.
+    const isBodyless = method === 'GET' || method === 'DELETE';
+    if (isBodyless) {
+      Object.assign(params, remaining);
+      for (const key of Object.keys(remaining)) delete remaining[key];
+    }
+
+    const body = isBodyless ? undefined : remaining;
+    const requestConfig = {
+      headers: { Authorization: `Bearer ${secret}` },
+      ...(Object.keys(params).length > 0 ? { params } : {}),
+    };
+
     // Log the exact host/path this dynamic tool is about to hit (no secret, no body).
     logger.info('dynamic-tool', 'Calling downstream API', {
       tool: this.config.name,
       requestId: extra?.requestId,
-      method: this.apiConfig.method,
-      url: this.apiClient.resolveUrl(this.apiConfig.path),
+      method,
+      url: this.apiClient.resolveUrl(path),
     });
 
-    const response = await this.apiClient.request(this.apiConfig.method, this.apiConfig.path, inputs, undefined, {
-      headers: { Authorization: `Bearer ${secret}` },
-    });
+    const response = await this.apiClient.request(method, path, body, undefined, requestConfig);
 
     return {
       content: [
