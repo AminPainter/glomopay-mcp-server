@@ -28,17 +28,39 @@ export class DynamicApiTool extends BaseTool {
 
     const { inputs } = args;
 
+    // `inputs` is a flat object mixing path, query and body params (openapi2zod
+    // collapses them into one schema). Split it back apart before dispatching.
+    const remaining: Record<string, unknown> = { ...((inputs as unknown as Record<string, unknown>) ?? {}) };
+
+    // 1. Interpolate any {placeholder} path segments and consume those keys.
+    const path = this.apiConfig.path.replace(/\{([^}]+)\}/g, (match, key) => {
+      if (key in remaining) {
+        const value = String(remaining[key]);
+        delete remaining[key];
+        return encodeURIComponent(value);
+      }
+      return match;
+    });
+
+    // 2. GET/DELETE carry remaining params in the query string; everything else
+    //    (POST/PUT/PATCH) carries them in the request body.
+    const method = this.apiConfig.method;
+    const isBodyless = method === 'GET' || method === 'DELETE';
+    const body = isBodyless ? undefined : remaining;
+    const requestConfig = {
+      headers: { Authorization: `Bearer ${secret}` },
+      ...(isBodyless ? { params: remaining } : {}),
+    };
+
     // Log the exact host/path this dynamic tool is about to hit (no secret, no body).
     logger.info('dynamic-tool', 'Calling downstream API', {
       tool: this.config.name,
       requestId: extra?.requestId,
-      method: this.apiConfig.method,
-      url: this.apiClient.resolveUrl(this.apiConfig.path),
+      method,
+      url: this.apiClient.resolveUrl(path),
     });
 
-    const response = await this.apiClient.request(this.apiConfig.method, this.apiConfig.path, inputs, undefined, {
-      headers: { Authorization: `Bearer ${secret}` },
-    });
+    const response = await this.apiClient.request(method, path, body, undefined, requestConfig);
 
     return {
       content: [
