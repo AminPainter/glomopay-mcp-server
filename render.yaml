@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: glomopay-mcp
+    runtime: node
+    plan: starter
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      # Required: the app defaults to 127.0.0.1; Render only routes to 0.0.0.0.
+      - key: HOST
+        value: 0.0.0.0
+      # Pin the Node version (codebase targets ES2023 / @types/node 24).
+      - key: NODE_VERSION
+        value: 22.11.0
+      # Downstream Glomopay base host (no /api/v1 — the server appends it).
+      # Set the value in the Render dashboard, not in git.
+      - key: API_HOST
+        sync: false
+    # No health check path: the server exposes only POST /mcp (GET -> 405),
+    # so Render marks the service live on port bind.
