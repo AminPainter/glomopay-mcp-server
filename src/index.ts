@@ -5,6 +5,7 @@ import { createHttpServer } from '@/core/http/http-server.module';
 import { OpenApiToolGenerator } from '@/features/openapi-tools-generator/openapi-tools-generator.module';
 import { ApiClient } from '@/shared/api-client/api-client.module';
 import { config } from '@/features/app-config/app-config.module';
+import { logger } from '@/shared/logger/logger.module';
 import { HealthCheckTool } from './features/health-check/health-check.module';
 
 (async () => {
@@ -22,9 +23,14 @@ import { HealthCheckTool } from './features/health-check/health-check.module';
   tools.forEach((t) => mcpServer.registerTool(t));
 
   mcpServer.registerTool(new HealthCheckTool());
+  logger.info('startup', 'Tools registered', { count: tools.length + 1 });
 
   const app = createHttpServer(mcpServer);
   app.listen(config.http.port, config.http.host, () => {
-    console.error(`Glomopay MCP Server running on HTTP ${config.http.host}:${config.http.port}/mcp`);
+    logger.info('startup', 'Glomopay MCP Server listening', {
+      host: config.http.host,
+      port: config.http.port,
+      path: '/mcp',
+    });
   });
 })();
