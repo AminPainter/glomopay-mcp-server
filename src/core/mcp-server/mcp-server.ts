@@ -1,5 +1,5 @@
 import { McpServer as McpServerInternal } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 
 import { BaseTool } from '@/shared/tool/tool.module';
 
@@ -39,8 +39,7 @@ export class MCPServer {
     return this;
   }
 
-  async start() {
-    const transport = new StdioServerTransport();
+  async connect(transport: Transport) {
     await this.server.connect(transport);
   }
 }

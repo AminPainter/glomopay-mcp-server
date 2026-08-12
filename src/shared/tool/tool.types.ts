@@ -1,7 +1,10 @@
-import { CallToolResult } from '@modelcontextprotocol/sdk/types';
+import { CallToolResult, ServerRequest, ServerNotification } from '@modelcontextprotocol/sdk/types';
+import { RequestHandlerExtra } from '@modelcontextprotocol/sdk/shared/protocol.js';
 import { ZodRawShape } from 'zod';
 
 import { THttpMethod } from '@/shared/api-client/api-client.module';
+
+export type TToolExtra = RequestHandlerExtra<ServerRequest, ServerNotification>;
 
 export interface IToolConfig {
   name: string;
@@ -16,5 +19,5 @@ export interface IApiConfig {
 }
 
 export interface IToolHandler {
-  (args: ZodRawShape): Promise<CallToolResult> | CallToolResult;
+  (args: ZodRawShape, extra: TToolExtra): Promise<CallToolResult> | CallToolResult;
 }
