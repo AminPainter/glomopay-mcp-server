@@ -39,10 +39,6 @@ export class MCPServer {
     return this;
   }
 
-  getServer() {
-    return this.server;
-  }
-
   async connect(transport: Transport) {
     await this.server.connect(transport);
   }
